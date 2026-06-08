@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: employee-app
+  namespace: employee-app
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: employee-app
+
+  template:
+
+    metadata:
+      labels:
+        app: employee-app
+
+    spec:
+
+      serviceAccountName: employee-app-sa
+
+      containers:
+
+      - name: employee-app
+
+        image: 383189130218.dkr.ecr.us-east-1.amazonaws.com/employee-app:latest
+
+        ports:
+        - containerPort: 5000
