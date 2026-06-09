@@ -30,3 +30,13 @@ spec:
 
         ports:
         - containerPort: 5000
+
+        env:
+        - name: SECRET_NAME
+          value: rdsaccess
+        - name: REGION
+          value: us-east-1
+        - name: RDS_HOST
+          value: empdatabase-1.c8nkiuao88ny.us-east-1.rds.amazonaws.com
+        - name: RDS_PORT
+          value: "5432"
