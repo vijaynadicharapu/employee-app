@@ -40,3 +40,11 @@ spec:
           value: empdatabase-1.c8nkiuao88ny.us-east-1.rds.amazonaws.com
         - name: RDS_PORT
           value: "5432"
+
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi

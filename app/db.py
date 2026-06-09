@@ -1,9 +1,10 @@
+import os
 import json
 import boto3
 import psycopg2
 
-SECRET_NAME="employee-db-secret"
-REGION="us-east-1"
+SECRET_NAME = os.getenv("SECRET_NAME", "employee-db-secret")
+REGION = os.getenv("REGION", "us-east-1")
 
 def get_connection():
 
