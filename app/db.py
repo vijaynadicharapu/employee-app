@@ -24,5 +24,5 @@ def get_connection():
         database=creds.get("dbname", "postgres"),
         user=creds["username"],
         password=creds["password"],
-        port=5432
+        port=creds.get("port", 5432)
     )
