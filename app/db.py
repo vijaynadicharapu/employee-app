@@ -3,7 +3,7 @@ import json
 import boto3
 import psycopg2
 
-SECRET_NAME = os.getenv("SECRET_NAME", "employee-db-secret")
+SECRET_NAME = os.getenv("SECRET_NAME", "rdsaccess")
 REGION = os.getenv("REGION", "us-east-1")
 
 def get_connection():
