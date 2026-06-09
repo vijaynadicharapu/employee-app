@@ -14,11 +14,12 @@ def get_connection():
     )
 
     secret = client.get_secret_value(
-        SecretId=SECRET_NAME
+        SecretId=SECRET_NAME    
     )
 
     creds = json.loads(secret["SecretString"])
-
+    db_name = creds.get("dbname", "postgres")
+    print(f"Connecting to database: {db_name}")
     return psycopg2.connect(
         host=creds["host"],
         database=creds.get("dbname", "postgres"),
