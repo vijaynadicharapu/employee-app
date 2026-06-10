@@ -3,19 +3,28 @@ from db import get_connection
 
 app = Flask(__name__)
 
-@app.route("/")
-def index():
+def init_db():
     conn = get_connection()
     cur = conn.cursor()
-
     cur.execute("""
-        CREATE TABLE IF NOT EXISTS employees(
+        CREATE TABLE IF NOT Exists employees(
             id SERIAL PRIMARY KEY,
             name VARCHAR(100),
             email VARCHAR(100),
             department VARCHAR(100)
         )
     """)
+    conn.commit()
+    cur.close()
+    conn.close()
+    
+init_db()
+                          
+
+@app.route("/")
+def index():
+    conn = get_connection()
+    cur = conn.cursor()
 
     cur.execute("SELECT * FROM employees ORDER BY id")
     employees = cur.fetchall()
