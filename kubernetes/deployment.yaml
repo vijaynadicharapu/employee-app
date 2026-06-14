@@ -26,7 +26,7 @@ spec:
 
       - name: employee-app
 
-        image: 383189130218.dkr.ecr.us-east-1.amazonaws.com/employee-app:latest
+        image: 383189130218.dkr.ecr.us-east-1.amazonaws.com/employee-app:dbcfaef7287bf1a78edc4c122040168ec7de9fe8
 
         ports:
         - containerPort: 5000
