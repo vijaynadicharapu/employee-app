@@ -58,10 +58,10 @@ spec:
         - name: RDS_PORT
           value: "5432"
 
-        volumeMounts:
-        - name: secrets-store
-          mountPath: "/mnt/secrets-store"
-          readOnly: true
+#        volumeMounts:
+#        - name: secrets-store
+#          mountPath: "/mnt/secrets-store"
+#          readOnly: true
 
 
         resources:
