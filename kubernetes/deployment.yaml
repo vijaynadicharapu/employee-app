@@ -21,7 +21,7 @@ spec:
       serviceAccountName: employee-app-sa
 
       containers:
-
+      
       - name: employee-app
 
         image: 383189130218.dkr.ecr.us-east-1.amazonaws.com/employee-app:dbcfaef7287bf1a78edc4c122040168ec7de9fe8
@@ -58,6 +58,12 @@ spec:
         - name: RDS_PORT
           value: "5432"
 
+        volumeMounts:
+        - name: secrets-store
+          mountPath: "/mnt/secrets-store"
+          readOnly: true
+
+
         resources:
           requests:
             cpu: 100m
@@ -66,12 +72,18 @@ spec:
             cpu: 500m
             memory: 512Mi
 
-            volumeMounts:
-            - name: secrets-store
-            csi:
-              driver: secrets-store.csi.k8s.io
-              readOnly: true
-              volumeAttributes:
-                secretProviderClass: aws-secrets
+# TODO:
+# Enable after installing:
+# 1. Secrets Store CSI Driver
+# 2. AWS Provider
+# 3. SecretProviderClass
+#        volumes:
+#      - name: secrets-store
+
+#        csi:
+#          driver: secrets-store.csi.k8s.io
+#          readOnly: true
+#          volumeAttributes:
+#            secretProviderClass: aws-secrets
 
                 
