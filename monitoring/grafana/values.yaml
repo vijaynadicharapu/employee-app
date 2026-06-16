@@ -1,0 +1,7 @@
+adminUser: admin
+
+persistence:
+  enabled: true
+
+service:
+  type: LoadBalancer

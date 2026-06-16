@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Employee Management Portal</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body>
+        <div class="container">
+            <h1>Employee Management Portal</h1>
+
+            <section id="add-employee">
+                <h2>Add Employee</h2>
+                <form method="post" action="/employee">
+                    <div class="form-row">
+                        <label for="name">Name</label>
+                        <input id="name" name="name" type="text" required>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="email">Email</label>
+                        <input id="email" name="email" type="email" required>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="department">Department</label>
+                        <input id="department" name="department" type="text" required>
+                    </div>
+
+                    <div class="form-row">
+                        <button type="submit">Save Employee</button>
+                    </div>
+                </form>
+            </section>
+
+            <section id="employee-list">
+                <h2>Employee List</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Department</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for emp in employees %}
+                        <tr>
+                            <td>{{ emp[0] }}</td>
+                            <td>{{ emp[1] }}</td>
+                            <td>{{ emp[2] }}</td>
+                            <td>{{ emp[3] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </body>
+</html>
+                        <tr>

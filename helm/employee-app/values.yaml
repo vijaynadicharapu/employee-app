@@ -1,0 +1,10 @@
+replicaCount: 2
+image:
+  repository: ECR URL
+  tag: "latest"
+  
+service:
+  type: ClusterIP
+  port: 80
+
+containerPort: 5000

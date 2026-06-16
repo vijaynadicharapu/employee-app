@@ -1,0 +1,17 @@
+groups:
+
+- name: employee-app-alerts
+
+  rules:
+
+  - alert: HighCPUUsage
+
+    expr: rate(container_cpu_usage_seconds_total[5m]) > 0.7
+
+    for: 2m
+
+    labels:
+      severity: warning
+
+    annotations:
+      summary: CPU usage above 70%

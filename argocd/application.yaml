@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+
+metadata:
+  name: employee-app
+
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/vijaynadicharapu/employee-app.git'
+    targetRevision: prod
+    path: helm/employee-app
+
+    destination:
+      server: 'https://kubernetes.default.svc'
+      namespace: employee-app
+
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true

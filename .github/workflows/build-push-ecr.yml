@@ -1,0 +1,92 @@
+name: Build Scan Push and Update Manifest
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: write
+  security-events: write
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REPOSITORY: employee-app
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout Source
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build Docker Image
+        run: |
+          docker build \
+            -t $ECR_REPOSITORY:${{ github.sha }} \
+            -f docker/Dockerfile .
+
+      - name: Create Reports Directory
+        run: mkdir -p reports
+
+      - name: Run Trivy Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: '${{ env.ECR_REPOSITORY }}:${{ github.sha }}'
+          format: 'sarif'
+          output: 'reports/trivy-results.sarif'
+          exit-code: '0'
+          severity: 'HIGH,CRITICAL'
+
+      - name: Verify Report
+        run: |
+          echo "===== Reports Folder ====="
+          ls -lah reports
+          echo "===== Report Size ====="
+          wc -c reports/trivy-results.sarif
+
+      - name: Upload Trivy Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-report-${{ github.sha }}
+          path: reports/trivy-results.sarif
+
+      - name: Tag Docker Image
+        run: |
+          docker tag \
+            $ECR_REPOSITORY:${{ github.sha }} \
+            ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:${{ github.sha }}
+
+      - name: Push Docker Image
+        run: |
+          docker push \
+            ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:${{ github.sha }}
+
+      - name: Update Kubernetes Manifest
+        run: |
+          sed -i "s|image: .*|image: ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:${{ github.sha }}|g" kubernetes/deployment.yaml
+
+      - name: Commit Deployment and Report
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git add kubernetes/deployment.yaml
+          git add reports/trivy-results.sarif
+
+          git commit -m "Update image and Trivy report ${{ github.sha }}" || echo "No changes"
+
+          git push

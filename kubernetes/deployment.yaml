@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: employee-app
+  namespace: employee-app
+
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: employee-app
+
+  template:
+    metadata:
+      labels:
+        app: employee-app
+
+    spec:
+
+      serviceAccountName: employee-app-sa
+
+      containers:
+
+      - name: employee-app
+
+        image: 383189130218.dkr.ecr.us-east-1.amazonaws.com/employee-app:dbcfaef7287bf1a78edc4c122040168ec7de9fe8
+
+        ports:
+        - containerPort: 5000
+
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 5000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 2
+          successThreshold: 1
+          failureThreshold: 3
+
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 5000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 2
+          failureThreshold: 3
+
+        env:
+        - name: SECRET_NAME
+          value: rdsaccesss
+        - name: REGION
+          value: us-east-1
+        - name: RDS_HOST
+          value: empdatabase-11.c8nkiuao88ny.us-east-1.rds.amazonaws.com
+        - name: RDS_PORT
+          value: "5432"
+
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+
+            volumeMounts:
+            - name: secrets-store
+            csi:
+              driver: secrets-store.csi.k8s.io
+              readOnly: true
+              volumeAttributes:
+                secretProviderClass: aws-secrets
+
+                
